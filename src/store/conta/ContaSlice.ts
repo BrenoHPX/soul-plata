@@ -1,19 +1,24 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { RootState } from "..";
+import { createEntityAdapter, createSlice} from "@reduxjs/toolkit";
 
-const initialState: number = 0;
+export type Transacao = {
+    id: string;
+    valor: number;
+}
+
+const adapter = createEntityAdapter<Transacao> ({
+    selectId: (valor) => valor.id,
+});
+
+export const { selectAll } = adapter.getSelectors((state: any) => state.conta);
 
 const contaSlice = createSlice({
     name: "conta",
-    initialState: initialState,
+    initialState: adapter.getInitialState(),
     reducers: {
-        depositar: (state, action: PayloadAction<number>) => state + action.payload,
-        sacar: (state, action: PayloadAction<number>) => state - action.payload,
+        transacionar: adapter.addOne,
     },
 })
 
-export const {depositar, sacar} = contaSlice.actions;
-
-export const selectSaldo = (state: RootState) => state.conta
+export const {transacionar} = contaSlice.actions;
 
 export default contaSlice.reducer;

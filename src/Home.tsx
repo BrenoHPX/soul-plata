@@ -1,22 +1,32 @@
 import { Button, Grid, Paper, TextField, Typography } from "@mui/material"
 import React, {useState} from "react";
-import { depositar, sacar, selectSaldo } from "./store/conta/ContaSlice";
+import { selectAll, transacionar } from "./store/conta/ContaSlice";
 import { useAppSelector, useAppDispatch} from "./store/hooks";
 
 const Home:React.FC = () => {
 
     const [valorDigitado, setValorDigitado] = useState<number>(0)
     
-    const saldo = useAppSelector(selectSaldo);
+    const listaTransacoes = useAppSelector(selectAll);
     const dispatch = useAppDispatch();
+    
+    const saldo = listaTransacoes.reduce<number>((anterior, atual) => {
+        return anterior + atual.valor
+    },0);
 
     function handleDepositar() {
-        dispatch(depositar(valorDigitado))
+        dispatch(transacionar({
+            id: Math.floor(Date.now() * Math.random()).toString(36),
+            valor: valorDigitado,
+        }))
     }
 
     function handleSacar() {
-        dispatch(sacar(valorDigitado))
-    }
+        dispatch(transacionar({
+            id: Math.floor(Date.now() * Math.random()).toString(36),
+            valor: valorDigitado*(-1),
+        }
+    ))}
 
 
     return(   
@@ -38,11 +48,16 @@ const Home:React.FC = () => {
                         <Typography variant="h5" component="h2">
                             {saldo}
                         </Typography>
-                        
                     </Paper>
-
-                    <span>{valorDigitado}</span>
-
+                    
+                    
+                    <Typography variant="h5" component="h2">
+                        {listaTransacoes.map((item) => 
+                            <>
+                                {item.valor}
+                            </>
+                        )}
+                    </Typography>
                 </ Grid>
                 
             </ Grid>
