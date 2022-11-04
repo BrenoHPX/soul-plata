@@ -53,9 +53,9 @@ const Home:React.FC = () => {
                     
                     <Typography variant="h5" component="h2">
                         {listaTransacoes.map((item) => 
-                            <>
+                            <div>
                                 {item.valor}
-                            </>
+                            </div>
                         )}
                     </Typography>
                 </ Grid>
